@@ -36,12 +36,16 @@ namespace Task.BinaryTree {
 
         #region Public Methods
 
+        /// <summary>Adds an items to the <see cref="BinaryTree{T}"/></summary>
+        /// <param name="collection">The collection to add to the <see cref="BinaryTree{T}"/></param>
         public void AddRange(IEnumerable<T> collection) {
             foreach(var value in collection) {
                 Add(value);
             }
         }
 
+        /// <summary>Adds an item to the <see cref="BinaryTree{T}"/></summary>
+        /// <param name="item">The object to add to the <see cref="BinaryTree{T}"/></param>
         public void Add(T item) {
             var node = new Node<T>(item);
             if(m_Root == null)
@@ -58,6 +62,40 @@ namespace Task.BinaryTree {
                     parent.RightNode = node;
             }
             ++Count;
+        }
+
+        public bool Remove(T item) {
+            throw new NotImplementedException();
+        }
+
+        public void Clear() {
+            m_Root = null;
+            Count = 0;
+        }
+
+        public bool Contains(T item) {
+            throw new NotImplementedException();
+        }
+
+        public T MinValue {
+            get {
+                if (m_Root == null)
+                    throw new InvalidOperationException("Tree is empty");
+                var current = m_Root;
+                while (current.LeftNode != null)
+                    current = current.LeftNode;
+                return current.Value;
+            }
+        }
+        public T MaxValue {
+            get {
+                if (m_Root == null)
+                    throw new InvalidOperationException("Tree is empty");
+                var current = m_Root;
+                while (current.RightNode != null)
+                    current = current.RightNode;
+                return current.Value;
+            }
         }
 
         public IEnumerable<T> Inorder() => Inorder(m_Root);

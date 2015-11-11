@@ -9,6 +9,10 @@ using NUnit.Framework;
 namespace Task.BinaryTree.NUnitTests {
     [TestFixture]
     public class BinaryTreeTest {
-        
+        private IEnumerable<TestCaseData> TestDatas {
+            get {
+                yield return new TestCaseData();
+            }
+        } 
     }
 }
