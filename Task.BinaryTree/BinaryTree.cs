@@ -74,7 +74,14 @@ namespace Task.BinaryTree {
         }
 
         public bool Contains(T item) {
-            throw new NotImplementedException();
+            var current = m_Root;
+            while(current != null) {
+                var result = Comparer.Compare(item, current.Value);
+                if(result == 0)
+                    return true;
+                current = result < 0 ? current.LeftNode : current.RightNode;
+            }
+            return false;
         }
 
         public T MinValue {
@@ -102,8 +109,6 @@ namespace Task.BinaryTree {
         public IEnumerable<T> Preorder() => Preorder(m_Root); 
         public IEnumerable<T> Postorder() => Postorder(m_Root); 
 
-
-
         public BinaryTree<T> Balance() {
             /*T[] array = this.ToArray();
             Array.Sort(array, Comparer);
@@ -122,27 +127,22 @@ namespace Task.BinaryTree {
             return sb.ToString();
         }
 
+        public IEnumerator<T> GetEnumerator() => Inorder().GetEnumerator();
         #endregion
 
-        #region Private Methods
+        #region PrivateMethod
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         private void PrintTree(Node<T> node, StringBuilder sb, int level) {
-            if(node != null) {
+            if (node != null) {
                 PrintTree(node.LeftNode, sb, level + 1);
-                for(int i = 0; i < level; i++)
+                for (int i = 0; i < level; i++)
                     sb.Append("   ");
                 sb.Append($"{node.Value}\n");
                 PrintTree(node.RightNode, sb, level + 1);
             }
         }
 
-        public IEnumerator<T> GetEnumerator() => Inorder().GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        #endregion
-
-        #region PrivateMethod
         private IEnumerable<T> Inorder(Node<T> node) {
             if (node == null) yield break;
             foreach(var n in Inorder(node.LeftNode)) 
