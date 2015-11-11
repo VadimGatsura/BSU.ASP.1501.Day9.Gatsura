@@ -6,8 +6,8 @@ using System.Text;
 namespace Task.BinaryTree {
     public sealed class BinaryTree<T> : IEnumerable<T> {
         private class Node<TValue> {
-            public TValue Value { get; private set; }
-            public Node<TValue> LeftNode { get; set; }  
+            public TValue Value { get; }
+            public Node<TValue> LeftNode { get; set; }
             public Node<TValue> RightNode { get; set; }
             public Node(TValue value) {
                 Value = value;
@@ -56,16 +56,39 @@ namespace Task.BinaryTree {
                     parent = current;
                     current = Comparer.Compare(item, current.Value) < 0 ? current.LeftNode : current.RightNode;
                 }
-                if(Comparer.Compare(item, parent.Value) < 0)
-                    parent.LeftNode = node;
-                else
-                    parent.RightNode = node;
+                ChangeParent(parent, item, node);
             }
             ++Count;
         }
 
         public bool Remove(T item) {
-            throw new NotImplementedException();
+            if(m_Root == null) return false;
+
+            Node<T> parent = null;
+            var current = Find(item, ref parent);
+            if(current == null)
+                return false;
+
+            if (current.RightNode == null) 
+                ChangeParent(parent, current, current.LeftNode);
+            else if (current.RightNode.LeftNode == null) {
+                current.RightNode.LeftNode = current.LeftNode;
+                ChangeParent(parent, current, current.RightNode);
+            } else {
+                Node<T> min = current.RightNode.LeftNode, prev = current.RightNode;
+                while (min.LeftNode != null) {
+                    prev = min;
+                    min = min.LeftNode;
+                }
+                prev.LeftNode = min.RightNode;
+                min.LeftNode = current.LeftNode;
+                min.RightNode = current.RightNode;
+
+                ChangeParent(parent, current, min);
+            }
+
+            --Count;
+            return true;
         }
 
         public void Clear() {
@@ -132,6 +155,34 @@ namespace Task.BinaryTree {
 
         #region PrivateMethod
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        private Node<T> Find(T item, ref Node<T> parent) {
+            var current = m_Root;
+            while (current != null) {
+                var result = Comparer.Compare(item, current.Value);
+                if (result == 0)
+                    return current;
+                parent = current;
+                current = result < 0 ? current.LeftNode : current.RightNode;
+            }
+            return null;
+        }
+
+        private void ChangeParent(Node<T> parent, Node<T> current, Node<T> child) {
+            if(current == m_Root) {
+                m_Root = child;
+                return;
+            }
+            ChangeParent(parent, current.Value, child);
+        }
+
+        private void ChangeParent(Node<T> parent, T value, Node<T> child) {
+            int result = Comparer.Compare(value, parent.Value);
+            if (result < 0)
+                parent.LeftNode = child;
+            else
+                parent.RightNode = child;
+        }
 
         private void PrintTree(Node<T> node, StringBuilder sb, int level) {
             if (node != null) {
