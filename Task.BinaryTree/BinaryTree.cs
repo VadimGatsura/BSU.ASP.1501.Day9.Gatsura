@@ -24,6 +24,11 @@ namespace Task.BinaryTree {
         public BinaryTree(IComparer<T> comparer) {
             if(comparer == null)
                 throw new ArgumentException($"Argument {nameof(comparer)} is null");
+            try {
+                comparer.Compare(default(T), default(T));
+            } catch(NullReferenceException) {} catch(ArgumentException ex) {
+                throw new ArgumentException($"Type {typeof(T)} doesn't realize interface IComparable or IComparable<{typeof(T)}>", ex);
+            }
             Comparer = comparer;
         }
 
@@ -145,7 +150,10 @@ namespace Task.BinaryTree {
         public override string ToString() {
             StringBuilder sb = new StringBuilder();
             sb.Append($"Print BinaryTree. Size: {Count}\n");
-            PrintTree(m_Root, sb, 0);
+            if(m_Root == null)
+                sb.Append("Binary tree is empty\n");
+            else
+                PrintTree(m_Root, sb, 0);
             sb.Append("End of PrintTree\n");
             return sb.ToString();
         }
