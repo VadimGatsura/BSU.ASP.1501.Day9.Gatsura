@@ -17,6 +17,10 @@ namespace Task.BinaryTree.ConsoleUI {
         public int Compare(Point2D x, Point2D y) => (int) (x.Distance - y.Distance);
     }
 
+    public class BookComparer : IComparer<Book> {
+        public int Compare(Book x, Book y) => (int)(x.Price - y.Price);
+    }
+
     public struct Point2D {
         public int X { get; }
         public int Y { get; }
@@ -84,18 +88,30 @@ namespace Task.BinaryTree.ConsoleUI {
 
         static void Main(string[] args) {
             
-            TestTree(new[] { 44, 28, 85, 0, -5, 195, 32, 21, 48, 28, 34, 5, 8 }, new[] { 0, -105, 44, 8 }, new DigitsComparer());
+            TestTree(new[] { 44, 28, 85, 0, -5, 195, 32, 21, 48, 28, 34, 5, 8 }, 
+                     new[] { 0, -105, 44, 8 }, 
+                     new DigitsComparer());
             WriteLine("Press any button for continue to next tree");
             ReadKey();
             Clear();
 
-            TestTree(new[] {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "." }, new [] {"twelve", "four", "one", "six"}, new StringComparer());
+            TestTree(new[] {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "." }, 
+                     new [] {"twelve", "four", "one", "six"}, 
+                     new StringComparer());
             WriteLine("Press any button for continue to next tree");
             ReadKey();
             Clear();
 
+            TestTree(new[] { new Point2D(0 ,5), new Point2D(5, 0), new Point2D(10, -5), new Point2D(3, 2), new Point2D(2, 3), new Point2D(1, 0) },
+                             new[] { new Point2D(5, 0), new Point2D(2, 3), new Point2D(4, 5) }, 
+                             new Point2DComparer());
+            WriteLine("Press any button for continue to next tree");
+            ReadKey();
+            Clear();
 
-            TestTree(new[] { new Point2D(0 ,5), new Point2D(5, 0), new Point2D(10, -5), new Point2D(3, 2), new Point2D(2, 3), new Point2D(1, 0) }, new[] { new Point2D(5, 0), new Point2D(2, 3), new Point2D(4, 5) }, new Point2DComparer());
+            TestTree(new[] { new Book("", "", 128, 32000), new Book("", "", 128, 46000), new Book("", "", 256, 32000), new Book("", "", 64, 12800), new Book("", "", 55, 10500) }, 
+                             new [] { new Book("", "", 64, 32000), new Book("", "", 55, 32000), new Book("", "", 128, 105000) }, 
+                             new BookComparer());
 
             ReadKey();
         }
